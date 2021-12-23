@@ -197,41 +197,44 @@ html_theme = 'sphinx_rtd_theme'
 
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
-{% set docname = env.doc2path(env.docname, base=True) %}
+{% set docname = 'source/' + env.doc2path(env.docname, base=False) %}
 
-.. only:: html
+.. raw:: html
 
-    .. role:: raw-html(raw)
-        :format: html
-
-    .. nbinfo::
-
-        This page was generated from `{{ docname }}`__.
-        Interactive online version:
-        :raw-html:`<a href="https://mybinder.org/v2/gh/sunt05/BLM-BU/master?filepath={{ docname }}"><img alt="Binder badge" src="https://mybinder.org/badge.svg" style="vertical-align:text-bottom"></a>`
-        Slideshow:
-        :raw-html:`<a href="https://nbviewer.jupyter.org/format/slides/github/sunt05/BLM-BU/tree/master/{{ docname }}"><img alt="Binder badge" src="https://img.shields.io/badge/render-nbviewer-orange.svg" style="vertical-align:text-bottom"></a>`
-
-    __ https://github.com/sunt05/BLM-BU/blob/master/{{ docname }}
+    <div class="admonition note">
+      This page was generated from
+      <a class="reference external" href="https://github.com/sunt05/blm-bu/blob/main/{{ docname|e }}">{{ docname|e }}</a>.
+      Interactive online version:
+      <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/sunt05/blm-bu/{{ env.config.release|e }}?filepath={{ docname|e }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>.</span>
+      <script>
+        if (document.location.host) {
+          $(document.currentScript).replaceWith(
+            '<a class="reference external" ' +
+            'href="https://nbviewer.jupyter.org/url' +
+            (window.location.protocol == 'https:' ? 's/' : '/') +
+            window.location.host +
+            window.location.pathname.slice(0, -4) +
+            'ipynb">View in <em>nbviewer</em></a>.'
+          );
+        }
+      </script>
+    </div>
 
 .. raw:: latex
 
-    \vfil\penalty-1\vfilneg
-    \vspace{\baselineskip}
+    \nbsphinxstartnotebook{\scriptsize\noindent\strut
     \textcolor{gray}{The following section was generated from
-    \texttt{\strut{}{{ docname }}}\\[-0.5\baselineskip]
-    \noindent\rule{\textwidth}{0.4pt}}
-    \vspace{-2\baselineskip}
+    \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
 """
 
 # This is processed by Jinja2 and inserted after each notebook
 nbsphinx_epilog = r"""
+{% set docname = 'docs/source/' + env.doc2path(env.docname, base=None) %}
 .. raw:: latex
 
-    \textcolor{gray}{\noindent\rule{\textwidth}{0.4pt}\\
-    \hbox{}\hfill End of
-    \texttt{\strut{}{{ env.doc2path(env.docname, base=True) }}}}
-    \vfil\penalty-1\vfilneg
+    \nbsphinxstopnotebook{\scriptsize\noindent\strut
+    \textcolor{gray}{\dotfill\ \sphinxcode{\sphinxupquote{\strut
+    {{ docname | escape_latex }}}} ends here.}}
 """
 
 # Theme options are theme-specific and customize the look and feel of a theme
